@@ -1,0 +1,21 @@
+body {
+    background-color: #388E3C;
+}
+/* Main - #388E3C
+Secondary - #1B5E20
+Complement - #AEEA00
+*/
+
+.navbar-custom {
+    background-color: #1B5E20;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-text {
+    color: #AEEA00;
+}
+
+#nav {
+    background-color: #1B5E20;
+    color: whitesmoke;
+}

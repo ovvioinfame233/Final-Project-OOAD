@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sports Battle - Sign Up!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+        body {
+            background-color: #388E3C;
+        }
+
+        nav {
+            background-color: #1B5E20;
+        }
+
+        #text {
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: solid #388E3C;
+            background-color: #388E3C;
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+
+        }
+
+        .boxed {
+            background-color: #1B5E20;
+            padding: 90px;
+            margin-top: 50px;
+            border-radius: 15px;
+            left: 25%;
+            right: 25%;
+            position: absolute;
+        }
+
+        #butt {
+            background-color: #388E3C;
+            color: #AEEA00;
+            border-radius: 10px;
+            float: right;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        ::placeholder {
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #centertext {
+            text-align: center;
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a id="text" class="navbar-brand" href="/">Sports Battle</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a id="text" href="/login"><span></span> Login</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="centertext">
+        <br>
+        <h1>Predict Winners</h>
+    </div>
+    <div class="container">
+        <div class="boxed">
+            <h1 id="centertext">Sign Up!</h1>
+            <br>
+            <form action="" method="post">
+                <input type="text" placeholder="Username" name="username" value="{{
+          request.form.username }}" required='required'>
+                <input type="password" placeholder="Password" name="password" value="{{
+          request.form.password }}" required='required'>
+                <input class="btn btn-default" id="butt" type="submit" value="Sign Up">
+            </form>
+            {% if error %}
+            <p id="text" class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
+
+        </div>
+    </div>
+</body>
+
+</html>
