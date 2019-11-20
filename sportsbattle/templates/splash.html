@@ -78,7 +78,7 @@
     </nav>
     <div id="centertext">
         <br>
-        <h1>Predict Winners</h>
+        <h1>Predict Winners, Win Points</h>
     </div>
     <div class="container">
         <div class="boxed">
@@ -86,9 +86,9 @@
             <br>
             <form action="" method="post">
                 <input type="text" placeholder="Username" name="username" value="{{
-          request.form.username }}" required='required'>
+          request.form.username }}" required='required' minlength="8">
                 <input type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}" required='required'>
+          request.form.password }}" required='required' minlength="8">
                 <input class="btn btn-default" id="butt" type="submit" value="Sign Up">
             </form>
             {% if error %}

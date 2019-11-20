@@ -26,6 +26,7 @@ def splash():
     if request.method == 'POST':
         if request.form['username'] not in userpass.keys():
             userpass[request.form['username']] = request.form['password']
+            session['logged_in'] = True
             return redirect(url_for('home'))
         else:
             error = "User already exists."
@@ -60,7 +61,7 @@ def login():
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out.')
-    return redirect(url_for('splash'))
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
