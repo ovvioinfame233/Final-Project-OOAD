@@ -63,6 +63,11 @@ def logout():
     flash('You were logged out.')
     return redirect(url_for('login'))
 
+@app.route('/makepicks')
+@login_required
+def makepicks():
+    return render_template('makepicks.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
