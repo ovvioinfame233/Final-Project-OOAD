@@ -13,6 +13,7 @@ import csv
 
 userpass = {'admin': 'admin'}
 leaguenames = {'admin':'admin'}
+currentuser = [None]
 
 # Create the app object
 app = Flask(__name__)
@@ -39,13 +40,14 @@ def splash():
         if request.form['username'] not in userpass.keys():
             userpass[request.form['username']] = request.form['password']
             session['logged_in'] = True
-            
-            ### we want create the user file and append the username.
-            
+            userfile = open('users/%s.csv' % request.form['username'], 'w+')
+            with open('userNames.csv', 'a') as names:
+                fieldnames = ['username', 'password']
+                writer = csv.DictWriter(names, fieldnames=fieldnames)
+                writer.writerow({'username': request.form['username'], 'password' : request.form['password']})
             return redirect(url_for('home'))
         else:
             error = "User already exists."
-            flash(error)
     return render_template('splash.html', error=error)
 
 @app.route('/home')
@@ -60,7 +62,9 @@ def login():
         if request.form['username'] not in userpass.keys() or request.form['password'] not in userpass.values():
             error = "Invalid Creds, try again."
         else:
+            currentuser[0] = request.form['username']
             session['logged_in'] = True
+            
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
@@ -68,8 +72,7 @@ def login():
 @login_required
 def logout():
     session.pop('logged_in', None)
-    flash('You were logged out.')
-    return redirect(url_for('login'))
+    return redirect(url_for('splash'))
 
 @app.route('/makepicks')
 @login_required
@@ -89,7 +92,11 @@ def createleague():
                 fieldnames = ['leagueName', 'leagueCode']
                 writer = csv.DictWriter(outfile, fieldnames=fieldnames)
                 writer.writerow({'leagueName' : request.form['leagueName'], 'leagueCode' : request.form['leagueCode']})
-                return redirect(url_for('home'))
+            with open('leagues/%s.csv' % request.form['leagueName'], 'a') as leagueOutfile:
+                fieldnames = ['username', 'score']
+                writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
+                writer.writerow({'username' : currentuser[0], 'score' : 0 })
+            return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
 @app.route('/teamOne')
@@ -109,8 +116,12 @@ def teamThree():
 
 
 if __name__ == '__main__':
-    infile = open('leagueNames.csv', 'r')
-    for row in infile:
+    infileleagues = open('leagueNames.csv', 'r')
+    for row in infileleagues:
         info = row.split(',')
         leaguenames[info[0]] = info[1]
+    infileusers = open('userNames.csv', 'r')
+    for row in infileusers:
+        info = row.split(',')
+        userpass[info[0]] = info[1]
     app.run(debug=True)
