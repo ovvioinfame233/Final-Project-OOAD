@@ -106,6 +106,11 @@ def createleague():
             return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
+@app.route('/joinleague', methods=['GET', 'POST'])
+@login_required
+def joinleague():
+    error = None
+
 @app.route('/teamOne')
 @login_required
 def teamOne():
