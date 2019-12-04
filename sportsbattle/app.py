@@ -96,6 +96,10 @@ def createleague():
                 fieldnames = ['username', 'score']
                 writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
                 writer.writerow({'username' : currentuser[0], 'score' : 0 })
+            with open('users/%s.csv', 'a') as out:
+                fieldnames = ['league', 'score']
+                writer = csv.DictWriter(out, fieldnames=fieldnames)
+                writer.writerow({'league' : request.form['leagueName', 'score' : 0]})
             return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
