@@ -13,7 +13,7 @@ import csv
 
 userpass = {'admin': 'admin'}
 leaguenames = {'admin':'admin'}
-currentuser = [None]
+currentuser = ""
 
 # Create the app object
 app = Flask(__name__)
@@ -38,6 +38,7 @@ def splash():
     success = "You are now signed up"
     if request.method == 'POST':
         if request.form['username'] not in userpass.keys():
+            global currentuser
             userpass[request.form['username']] = request.form['password']
             session['logged_in'] = True
             userfile = open('users/%s.csv' % request.form['username'], 'w+')
@@ -45,6 +46,7 @@ def splash():
                 fieldnames = ['username', 'password']
                 writer = csv.DictWriter(names, fieldnames=fieldnames)
                 writer.writerow({'username': request.form['username'], 'password' : request.form['password']})
+            currentuser = request.form['username']
             return redirect(url_for('home'))
         else:
             error = "User already exists."
@@ -62,7 +64,8 @@ def login():
         if request.form['username'] not in userpass.keys() or request.form['password'] not in userpass.values():
             error = "Invalid Creds, try again."
         else:
-            currentuser[0] = request.form['username']
+            global currentuser
+            currentuser = request.form['username']
             session['logged_in'] = True
             
             return redirect(url_for('home'))
@@ -95,11 +98,11 @@ def createleague():
             with open('leagues/%s.csv' % request.form['leagueName'], 'a') as leagueOutfile:
                 fieldnames = ['username', 'score']
                 writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
-                writer.writerow({'username' : currentuser[0], 'score' : 0 })
-            with open('users/%s.csv', 'a') as out:
+                writer.writerow({'username' : currentuser, 'score' : 0 })
+            with open('users/%s.csv' % currentuser, 'a') as out:
                 fieldnames = ['league', 'score']
                 writer = csv.DictWriter(out, fieldnames=fieldnames)
-                writer.writerow({'league' : request.form['leagueName', 'score' : 0]})
+                writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
             return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
