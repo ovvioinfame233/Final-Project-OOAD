@@ -3,10 +3,17 @@ from flask import Flask, render_template, redirect, session, url_for, request, f
 #import pymsgbox
 from functools import wraps
 
+### probaly in the main 
+## as soon as the app starts
+## read all the user files
+## append to userpass
+
+
 userpass = {'admin': 'admin'}
 # Create the app object
 app = Flask(__name__)
 app.secret_key = 'hello'
+
 
 def login_required(f):
     @wraps(f)
@@ -27,6 +34,9 @@ def splash():
         if request.form['username'] not in userpass.keys():
             userpass[request.form['username']] = request.form['password']
             session['logged_in'] = True
+            
+            ### we want create the user file and append the username.
+            
             return redirect(url_for('home'))
         else:
             error = "User already exists."
