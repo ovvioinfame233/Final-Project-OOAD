@@ -2,11 +2,25 @@
 from flask import Flask, render_template, redirect, session, url_for, request, flash
 #import pymsgbox
 from functools import wraps
+## os does file nav
+import os
 
+## dictonary that holds usernames ans passwords
 userpass = {'admin': 'admin'}
 # Create the app object
 app = Flask(__name__)
 app.secret_key = 'hello'
+        
+full_path = os.path.realpath(__file__)
+directory = os.path.dirname(full_path)+"/Users"
+for filename in os.listdir(directory):
+    if filename.endswith(".txt"):
+        f = open(directory+"/"+filename)
+        UserPassString = f.readline()
+        UserPassString = UserPassString.split(",")
+        Username = UserPassString[0]
+        Password = UserPassString[1]
+        userpass[Username] = Password
 
 def login_required(f):
     @wraps(f)
@@ -27,6 +41,8 @@ def splash():
         if request.form['username'] not in userpass.keys():
             userpass[request.form['username']] = request.form['password']
             session['logged_in'] = True
+            f = open("Users/"+request.form['username']+".txt","x")
+            f.write(request.form['username']+","+ request.form['password'])
             return redirect(url_for('home'))
         else:
             error = "User already exists."
