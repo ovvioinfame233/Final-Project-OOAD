@@ -2,6 +2,8 @@
 from flask import Flask, render_template, redirect, session, url_for, request, flash
 #import pymsgbox
 from functools import wraps
+import csv
+
 
 ### probaly in the main 
 ## as soon as the app starts
@@ -10,10 +12,12 @@ from functools import wraps
 
 
 userpass = {'admin': 'admin'}
-leaguenames = {'admin' : 'admin'}
+leaguenames = {'admin':'admin'}
+
 # Create the app object
 app = Flask(__name__)
 app.secret_key = 'hello'
+
 
 
 def login_required(f):
@@ -49,12 +53,6 @@ def splash():
 def home():
     return render_template('main.html')
 
-'''
-@app.route('/welcome')
-def welcome():
-	return "Hello world!"
-'''  
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
@@ -63,7 +61,6 @@ def login():
             error = "Invalid Creds, try again."
         else:
             session['logged_in'] = True
-            flash('You were logged in.')
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
@@ -87,7 +84,12 @@ def createleague():
         if request.form['leagueName'] in leaguenames.keys():
             error = "League Name Already Exists"
         else:
-            return 0
+            leaguenames[request.form['leagueName']] = request.form['leagueCode']
+            with open('leagueNames.csv', 'a') as outfile:
+                fieldnames = ['leagueName', 'leagueCode']
+                writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+                writer.writerow({'leagueName' : request.form['leagueName'], 'leagueCode' : request.form['leagueCode']})
+                return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
 @app.route('/teamOne')

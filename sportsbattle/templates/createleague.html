@@ -100,13 +100,16 @@
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-            <h1 id="centertext">My Teams</h1>
+            <h1 id="centertext">Information</h1>
             <br>
             <form action="" method="post">
-                <input type="text" placeholder="Name of League" name="leagueName" required='required' minlength="8">
-                <input type="password" placeholder="Code for League" name="leagueCode" required='required' minlength="8">
+                <input type="text" placeholder="Name of League" name="leagueName" required='required' minlength="6">
+                <input type="text" placeholder="Code for League" name="leagueCode" required='required' minlength="4">
                 <input class="btn btn-default" id="butt" type="submit" value="Create League">
             </form>
+            {% if error %}
+            <p id="text" class="error"><strong>Error:</strong> {{ error }}
+                {% endif %}
         </div>
     </div>
 </body>
