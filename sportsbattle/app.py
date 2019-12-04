@@ -10,6 +10,7 @@ from functools import wraps
 
 
 userpass = {'admin': 'admin'}
+leaguenames = {'admin' : 'admin'}
 # Create the app object
 app = Flask(__name__)
 app.secret_key = 'hello'
@@ -77,6 +78,32 @@ def logout():
 @login_required
 def makepicks():
     return render_template('makepicks.html')
+
+@app.route('/createleague', methods=['GET', 'POST'])
+@login_required
+def createleague():
+    error = None
+    if request.method == 'POST':
+        if request.form['leagueName'] in leaguenames.keys():
+            error = "League Name Already Exists"
+        else:
+            return 0
+    return render_template('createleague.html', error=error)
+
+@app.route('/teamOne')
+@login_required
+def teamOne():
+    return render_template('teamOne.html')
+
+@app.route('/teamTwo')
+@login_required
+def teamTwo():
+    return render_template('teamTwo.html')
+
+@app.route('/teamThree')
+@login_required
+def teamThree():
+    return render_template('teamThree.html')
 
 
 if __name__ == '__main__':

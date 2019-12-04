@@ -39,16 +39,15 @@
             width: 500px;
             height: 500px;
         }
-
-        .pickBut {
+        .backBut {
             background-color: #1B5E20;
-            float: inline-start;
+            border-radius: 100px;
+            border: 0px;
+            height: 75px;
+            width: 75px;
+            margin-top: 30px;
             color: #AEEA00;
-            border: #1B5E20;
-            border-radius: 15px;
-            
         }
-
         .leadBox {
             background-color: #388e3c;
             display: inline-block;
@@ -56,6 +55,27 @@
             width: 100%;
             height: 20%;
             margin: 10px;
+        }
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: solid #388E3C;
+            background-color: #388E3C;
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+
+        }
+        #butt {
+            background-color: #388E3C;
+            color: #AEEA00;
+            border-radius: 10px;
+            float: right;
+            font-family: 'Courier New', Courier, monospace;
         }
     </style>
 </head>
@@ -73,18 +93,20 @@
     </nav>
     <div id="centertext">
         <br>
-        <h1>Day at a Glance</h1>
+        <h1>Create League</h1>
         <br>
-        <button class="pickBut" type="button" onclick="window.location.href='/createleague'">Create League</button>
+        <button class="backBut" onclick="window.location.href='/home'">Back</button>
     </div>
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
             <h1 id="centertext">My Teams</h1>
             <br>
-            <div class="leadBox">Hello</div>
-            <div class="leadBox">Hello</div>
-            <div class="leadBox">Hello</div>
+            <form action="" method="post">
+                <input type="text" placeholder="Name of League" name="leagueName" required='required' minlength="8">
+                <input type="password" placeholder="Code for League" name="leagueCode" required='required' minlength="8">
+                <input class="btn btn-default" id="butt" type="submit" value="Create League">
+            </form>
         </div>
     </div>
 </body>
