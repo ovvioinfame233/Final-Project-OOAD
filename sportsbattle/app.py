@@ -82,7 +82,7 @@ def createleague():
     error = None
     if request.method == 'POST':
         if request.form['leagueName'] in leaguenames.keys():
-            error = "League Name Already Exists"
+            error = "League Already Exists"
         else:
             leaguenames[request.form['leagueName']] = request.form['leagueCode']
             with open('leagueNames.csv', 'a') as outfile:
@@ -109,4 +109,8 @@ def teamThree():
 
 
 if __name__ == '__main__':
+    infile = open('leagueNames.csv', 'r')
+    for row in infile:
+        info = row.split(',')
+        leaguenames[info[0]] = info[1]
     app.run(debug=True)
