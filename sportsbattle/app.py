@@ -110,6 +110,7 @@ def createleague():
 @login_required
 def joinleague():
     error = None
+    return render_template('joinleague.html', error=error)
 
 @app.route('/teamOne')
 @login_required
@@ -133,7 +134,8 @@ if __name__ == '__main__':
         info = row.split(',')
         leaguenames[info[0]] = info[1]
     infileusers = open('userNames.csv', 'r')
-    for row in infileusers:
-        info = row.split(',')
-        userpass[info[0]] = info[1]
+    for row2 in infileusers:
+        info2 = row2.split(',')
+        info2[1] = info2[1].strip('\n')
+        userpass[info2[0]] = info2[1]
     app.run(debug=True)
