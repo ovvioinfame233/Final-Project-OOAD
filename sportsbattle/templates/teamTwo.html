@@ -90,7 +90,16 @@
         <br>
         <div class="boxed">
             <h1 id="centertext">Team 2</h1>
-
+            <ul>
+                <table border = 1>
+                    {% for item in games %}
+                       <tr>
+                          <th> {{ item.Home }} </th>
+                          <td> {{ item.Away }} </td>
+                       </tr>
+                    {% endfor %}
+                 </table>
+            </ul>
         </div>
     </div>
 </body>

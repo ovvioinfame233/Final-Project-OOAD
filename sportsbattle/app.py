@@ -156,7 +156,24 @@ def teamOne():
 @app.route('/teamTwo')
 @login_required
 def teamTwo():
-    return render_template('teamTwo.html')
+    gamesThisWeek = Boxscores(9, 2019)
+    # Prints a dictionary of all matchups for week 1 of 2017
+    
+    #games_today.game
+    Libary = gamesThisWeek._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(Libary[week+'-'+year])
+    games = []
+
+    for i in range(numberOfGames):
+        home = Libary['9-2019'][i]['home_name']
+        away = Libary['9-2019'][i]['away_name']
+        hmm = { 'Home':home,
+                'Away' : away
+            }
+        games.append(hmm)
+    return render_template('teamTwo.html',games = games)
 
 
 
