@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sports Battle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+        body {
+            background-color: #388E3C;
+        }
+
+        nav {
+            background-color: #1B5E20;
+        }
+
+        #text {
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        ::placeholder {
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #centertext {
+            text-align: center;
+            color: #AEEA00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .boxed {
+            background-color: #1B5E20;
+            padding: 90px;
+            margin-top: 50px;
+            border-radius: 15px;
+            display: inline-block;
+            width: 500px;
+            height: 500px;
+        }
+
+        .pickBut {
+            background-color: #1B5E20;
+            float: inline-start;
+            color: #AEEA00;
+            border: #1B5E20;
+            border-radius: 15px;
+            
+        }
+
+        .leadBox {
+            background-color: #388e3c;
+            display: inline-block;
+            border-radius: 15px;
+            width: 100%;
+            height: 20%;
+            margin: 10px;
+            overflow: hidden;
+            color: #AEEA00;
+        }
+        .backBut {
+            background-color: #1B5E20;
+            border-radius: 100px;
+            border: 0px;
+            height: 75px;
+            width: 75px;
+            color: #AEEA00;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a id="text" class="navbar-brand" href="/home">Sports Battle</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a id="text" href="/logout"><span></span>Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="centertext">
+        <br>
+        <h1>Join League</h1>
+        <button class="backBut" onclick="window.location.href='/home'">Back</button>
+    </div>
+    <div class="container" style="text-align: center;">
+        <br>
+        <div class="boxed">
+            <h1 id="centertext">My Teams</h1>
+
+            <div class="leadBox" onclick="window.location.href='/teamOne'">Hello</div>
+            <div class="leadBox" onclick="window.location.href='/teamTwo'">Hello</div>
+            <div class="leadBox" onclick="window.location.href='/teamThree'">Hello</div>
+        </div>
+    </div>
+</body>
+
+</html>
