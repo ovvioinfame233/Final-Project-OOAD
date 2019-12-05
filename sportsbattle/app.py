@@ -110,6 +110,20 @@ def createleague():
 @login_required
 def joinleague():
     error = None
+    if request.method == 'POST':
+        if request.form['leagueCode'] in leaguenames.values():
+            key = list(leaguenames.keys())[list(leaguenames.values()).index(request.form['leagueCode'])]
+            with open('leagues/%s.csv' % key, 'a') as leagueOutfile:
+                fieldnames = ['username', 'score']
+                writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
+                writer.writerow({'username' : currentuser, 'score' : 0 })
+            with open('users/%s.csv' % currentuser, 'a') as out:
+                fieldnames = ['league', 'score']
+                writer = csv.DictWriter(out, fieldnames=fieldnames)
+                writer.writerow({'league' : key, 'score' : 0})
+            return redirect(url_for('home'))
+        else:
+            error = "Incorrect League Code"
     return render_template('joinleague.html', error=error)
 
 @app.route('/teamOne')
@@ -132,10 +146,13 @@ if __name__ == '__main__':
     infileleagues = open('leagueNames.csv', 'r')
     for row in infileleagues:
         info = row.split(',')
+        info[1] = info[1].strip('\n')
         leaguenames[info[0]] = info[1]
     infileusers = open('userNames.csv', 'r')
     for row2 in infileusers:
         info2 = row2.split(',')
         info2[1] = info2[1].strip('\n')
         userpass[info2[0]] = info2[1]
+    ##This is where we're going to need to add the capability to read the games that week
+    ##This is also probably where we're going to put all our data for the games and stuff
     app.run(debug=True)
