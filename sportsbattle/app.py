@@ -3,8 +3,10 @@ from flask import Flask, render_template, redirect, session, url_for, request, f
 #import pymsgbox
 from functools import wraps
 import csv
+from sportsreference.nfl.boxscore import Boxscores
 
 
+stefa= 5
 ### probaly in the main 
 ## as soon as the app starts
 ## read all the user files
@@ -126,15 +128,37 @@ def joinleague():
             error = "Incorrect League Code"
     return render_template('joinleague.html', error=error)
 
-@app.route('/teamOne')
+@app.route('/teamOne',methods = ['POST', 'GET'])
 @login_required
 def teamOne():
-    return render_template('teamOne.html')
+    # Prints a dictionary of all matchups for week 1 of 2017
+
+    
+   
+    
+    Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
+    lens = len(Pokemons)
+    games_today = Boxscores(9, 2019)
+    # Prints a dictionary of all matchups for week 1 of 2017
+    print(games_today.games)
+    #games_today.game
+    stef = games_today._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(stef[week+'-'+year])
+    winners = []
+    for i in range(numberOfGames):
+        f = stef['9-2019'][i]['winning_name']
+        winners.append(f)
+    lens = len(winners)
+    return render_template('teamOne.html',lens = lens,winners = winners)
 
 @app.route('/teamTwo')
 @login_required
 def teamTwo():
     return render_template('teamTwo.html')
+
+
 
 @app.route('/teamThree')
 @login_required
@@ -155,4 +179,4 @@ if __name__ == '__main__':
         userpass[info2[0]] = info2[1]
     ##This is where we're going to need to add the capability to read the games that week
     ##This is also probably where we're going to put all our data for the games and stuff
-    app.run(debug=True)
+    app.run(use_reloader = True,debug=True)
