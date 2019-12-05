@@ -45,7 +45,6 @@
             border: 0px;
             height: 75px;
             width: 75px;
-            margin-top: 30px;
             color: #AEEA00;
         }
         .leadBox {
@@ -94,7 +93,6 @@
     <div id="centertext">
         <br>
         <h1>Join League</h1>
-        <br>
         <button class="backBut" onclick="window.location.href='/home'">Back</button>
     </div>
     <div class="container" style="text-align: center;">
@@ -103,7 +101,7 @@
             <h1 id="centertext">Enter League Code</h1>
             <br>
             <form action="" method="post">
-                <input type="text" placeholder="Code for League" name="leagueCode" required='required' minlength="4">
+                <input type="text" placeholder="League Code" name="leagueCode" required='required' minlength="4">
                 <input class="btn btn-default" id="butt" type="submit" value="Join League">
             </form>
             {% if error %}
