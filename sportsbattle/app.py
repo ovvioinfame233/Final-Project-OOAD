@@ -7,7 +7,6 @@ from sportsreference.nfl.boxscore import Boxscores
 import os
 
 
-stefa= 5
 ### probaly in the main 
 ## as soon as the app starts
 ## read all the user files
@@ -58,7 +57,7 @@ def splash():
 @app.route('/home')
 @login_required
 def home():
-    return render_template('main.html')
+    return render_template('main.html',usersLeauges = usersLeauges)
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -70,8 +69,20 @@ def login():
             global currentuser
             currentuser = request.form['username']
             session['logged_in'] = True
-            ### 
-
+            full_path = os.path.realpath(__file__)
+            directory = os.path.dirname(full_path)+"/Users"
+            with open(directory+"/"+currentuser+".csv", 'r') as csv_file:
+                count = 0
+                csv_reader = csv.reader(csv_file, delimiter=',')
+                ListofLeauges =  []
+                lol = 0
+                for row in csv_reader:
+                    if(row != [] ):
+                        ListofLeauges.append(row)
+                        count = count + 1 
+                        lol = lol + 1
+            for i in range(len(ListofLeauges)):
+                usersLeauges.append(ListofLeauges[i][0])
 
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
@@ -94,6 +105,8 @@ def createleague():
     if request.method == 'POST':
         if request.form['leagueName'] in leaguenames.keys():
             error = "League Already Exists"
+        elif len(usersLeauges) == 3:
+            error = "You can only be in 3 Leauges at once"
         else:
             leaguenames[request.form['leagueName']] = request.form['leagueCode']
             with open('leagueNames.csv', 'a') as outfile:
@@ -108,6 +121,7 @@ def createleague():
                 fieldnames = ['league', 'score']
                 writer = csv.DictWriter(out, fieldnames=fieldnames)
                 writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
+                usersLeauges.append( request.form['leagueName'])
             return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
 
@@ -116,7 +130,9 @@ def createleague():
 def joinleague():
     error = None
     if request.method == 'POST':
-        if request.form['leagueCode'] in leaguenames.values():
+        if len(usersLeauges) == 3:
+            error = "You can only be in 3 Leauges at once"
+        elif request.form['leagueCode'] in leaguenames.values():
             key = list(leaguenames.keys())[list(leaguenames.values()).index(request.form['leagueCode'])]
             with open('leagues/%s.csv' % key, 'a') as leagueOutfile:
                 fieldnames = ['username', 'score']
@@ -126,6 +142,7 @@ def joinleague():
                 fieldnames = ['league', 'score']
                 writer = csv.DictWriter(out, fieldnames=fieldnames)
                 writer.writerow({'league' : key, 'score' : 0})
+                usersLeauges.append(key)
             return redirect(url_for('home'))
         else:
             error = "Incorrect League Code"
@@ -199,6 +216,7 @@ def teamThree():
 
 
 if __name__ == '__main__':
+    
     infileleagues = open('leagueNames.csv', 'r')
     for row in infileleagues:
         info = row.split(',')

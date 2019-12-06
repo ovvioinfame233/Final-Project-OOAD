@@ -83,11 +83,25 @@
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-            <h1 id="centertext">My Teams</h1>
+            <h1 id="centertext">My Leauges</h1>
+            {% if usersLeauges[0]|length > 0  %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">{{usersLeauges[0]}}</div>
+            {% else %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">Join a Leauge! </div>
+            {% endif %}
 
-            <div class="leadBox" onclick="window.location.href='/teamOne'">Hello</div>
-            <div class="leadBox" onclick="window.location.href='/teamTwo'">Hello</div>
-            <div class="leadBox" onclick="window.location.href='/teamThree'">Hello</div>
+            {% if usersLeauges[1]|length > 0  %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">{{usersLeauges[1]}}</div>
+            {% else %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">Join a Leauge! </div>
+            {% endif %}
+
+            {% if usersLeauges[2]|length > 0  %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">{{usersLeauges[2]}}</div>
+            {% else %}
+            <div class="leadBox" onclick="window.location.href='/teamOne'">Join a Leauge! </div>
+            {% endif %}
+            
         </div>
     </div>
 </body>
