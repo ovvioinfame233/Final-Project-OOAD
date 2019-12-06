@@ -35,7 +35,7 @@ def login_required(f):
     return wrap
 
 # Decorators to link function to a URL
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def splash():
     error = None
     success = "You are now signed up"
@@ -60,7 +60,7 @@ def splash():
 def home():
     return render_template('main.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
