@@ -89,6 +89,14 @@
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
+                <table border = 1>
+                        {% for item in Leaders %}
+                           <tr>
+                              <th> {{ item.Name }} </th>
+                              <td> {{ item.Score }} </td>
+                           </tr>
+                        {% endfor %}
+                     </table>
             <h1 id="centertext">Team 3</h1>
         </div>
     </div>

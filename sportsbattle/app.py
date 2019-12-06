@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, session, url_for, request, f
 from functools import wraps
 import csv
 from sportsreference.nfl.boxscore import Boxscores
+import os
 
 
 stefa= 5
@@ -16,7 +17,7 @@ stefa= 5
 userpass = {'admin': 'admin'}
 leaguenames = {'admin':'admin'}
 currentuser = ""
-
+usersLeauges = []
 # Create the app object
 app = Flask(__name__)
 app.secret_key = 'hello'
@@ -69,7 +70,9 @@ def login():
             global currentuser
             currentuser = request.form['username']
             session['logged_in'] = True
-            
+            ### 
+
+
             return redirect(url_for('home'))
     return render_template('login.html', error=error)
 
@@ -180,7 +183,19 @@ def teamTwo():
 @app.route('/teamThree')
 @login_required
 def teamThree():
-    return render_template('teamThree.html')
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/leagues"
+    Leaders = []
+    with open(directory+'/league1.csv', 'r') as csv_file:
+
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            NameScore = {'Name': row[0],
+                         'Score' : int(row[1])    
+                    }
+            Leaders.append(NameScore)
+    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
+    return render_template('teamThree.html',Leaders = Leaders)
 
 
 if __name__ == '__main__':
