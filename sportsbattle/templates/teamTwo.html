@@ -46,7 +46,7 @@
             color: #AEEA00;
             border: #1B5E20;
             border-radius: 15px;
-            
+
         }
 
         .leadBox {
@@ -59,6 +59,7 @@
             overflow: hidden;
             color: #AEEA00;
         }
+
         .backBut {
             background-color: #1B5E20;
             border-radius: 100px;
@@ -66,6 +67,25 @@
             height: 75px;
             width: 75px;
             color: #AEEA00;
+        }
+
+        .tab {
+            height: 300px;
+            overflow-y: scroll;
+            display: block;
+            margin-left: -50px;
+            margin-right: -50px;
+        }
+
+        .tabStuff {
+            table-layout: fixed;
+        }
+
+        .tabStuff td,
+        th {
+            overflow: hidden;
+            white-space: nowrap;
+            height: 50px;
         }
     </style>
 </head>
@@ -90,16 +110,23 @@
         <br>
         <div class="boxed">
             <h1 id="centertext">Team 2</h1>
-            <ul>
-                <table border = 1>
-                    {% for item in games %}
-                       <tr>
-                          <th> {{ item.Home }} </th>
-                          <td> {{ item.Away }} </td>
-                       </tr>
-                    {% endfor %}
-                 </table>
-            </ul>
+
+            <div class='tab'>
+                <ul>
+                    <form>
+                    <table border="1" class='tabStuff'>
+                        {% set counter = 0 %}
+                        {% for item in games %}
+                        <tr>
+                            <td><label><input type="radio">{{ item.Home }}</label> </td>
+                            <td><label><input type="radio">{{ item.Away }}</label> </td>
+                        </tr>
+                        {% set counter = counter + 1 %}
+                        {% endfor %}
+                    </table>
+                    </form>
+                </ul>
+            </div>
         </div>
     </div>
 </body>
