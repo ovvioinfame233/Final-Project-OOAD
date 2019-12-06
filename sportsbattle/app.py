@@ -45,9 +45,7 @@ def splash():
             session['logged_in'] = True
             userfile = open('users/%s.csv' % request.form['username'], 'w+')
             with open('userNames.csv', 'a') as names:
-                fieldnames = ['username', 'password']
-                writer = csv.DictWriter(names, fieldnames=fieldnames)
-                writer.writerow({'username': request.form['username'], 'password' : request.form['password']})
+                names.write(request.form['username']+','+request.form['password']+"\n")
             currentuser = request.form['username']
             return redirect(url_for('home'))
         else:
@@ -61,6 +59,7 @@ def home():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    usersLeauges.clear()
     error = None
     if request.method == 'POST':
         if request.form['username'] not in userpass.keys() or request.form['password'] not in userpass.values():
@@ -110,17 +109,17 @@ def createleague():
         else:
             leaguenames[request.form['leagueName']] = request.form['leagueCode']
             with open('leagueNames.csv', 'a') as outfile:
-                fieldnames = ['leagueName', 'leagueCode']
-                writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-                writer.writerow({'leagueName' : request.form['leagueName'], 'leagueCode' : request.form['leagueCode']})
+                outfile.writelines(request.form['leagueName']+','+request.form['leagueCode']+"\n")
             with open('leagues/%s.csv' % request.form['leagueName'], 'a') as leagueOutfile:
-                fieldnames = ['username', 'score']
-                writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
-                writer.writerow({'username' : currentuser, 'score' : 0 })
+                # fieldnames = ['username', 'score']
+                # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
+                # writer.writerow({'username' : currentuser, 'score' : 0 })
+                leagueOutfile.write(currentuser+','+'0'+'\n')
             with open('users/%s.csv' % currentuser, 'a') as out:
-                fieldnames = ['league', 'score']
-                writer = csv.DictWriter(out, fieldnames=fieldnames)
-                writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
+                # fieldnames = ['league', 'score']
+                # writer = csv.DictWriter(out, fieldnames=fieldnames)
+                # writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
+                out.write(request.form['leagueName']+','+'0'+'\n')
                 usersLeauges.append( request.form['leagueName'])
             return redirect(url_for('home'))
     return render_template('createleague.html', error=error)
@@ -135,13 +134,15 @@ def joinleague():
         elif request.form['leagueCode'] in leaguenames.values():
             key = list(leaguenames.keys())[list(leaguenames.values()).index(request.form['leagueCode'])]
             with open('leagues/%s.csv' % key, 'a') as leagueOutfile:
-                fieldnames = ['username', 'score']
-                writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
-                writer.writerow({'username' : currentuser, 'score' : 0 })
+                # fieldnames = ['username', 'score']
+                # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
+                # writer.writerow({'username' : currentuser, 'score' : 0 })
+                leagueOutfile.write(currentuser+','+'0'+'\n')
             with open('users/%s.csv' % currentuser, 'a') as out:
-                fieldnames = ['league', 'score']
-                writer = csv.DictWriter(out, fieldnames=fieldnames)
-                writer.writerow({'league' : key, 'score' : 0})
+                # fieldnames = ['league', 'score']
+                # writer = csv.DictWriter(out, fieldnames=fieldnames)
+                # writer.writerow({'league' : key, 'score' : 0})
+                out.write(key+','+'0'+'\n')
                 usersLeauges.append(key)
             return redirect(url_for('home'))
         else:
