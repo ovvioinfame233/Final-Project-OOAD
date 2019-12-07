@@ -82,9 +82,13 @@
         </div>
     </nav>
     <div id="centertext">
-        <br>
-        <h1>Join League</h1>
+            <br>
+            <h1 id="centertext">{{usersLeauges[2]}}</h1>
         <button class="backBut" onclick="window.location.href='/home'">Back</button>
+    </div>
+    <br>
+    <div id='centertext'>
+            <button class="pickBut" type="button" onclick="window.location.href='/makepicks'">Make Picks</button>
     </div>
     <div class="container" style="text-align: center;">
         <br>
@@ -97,7 +101,6 @@
                            </tr>
                         {% endfor %}
                      </table>
-            <h1 id="centertext">Team 3</h1>
         </div>
     </div>
 </body>

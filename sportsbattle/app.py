@@ -93,10 +93,40 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
-@app.route('/makepicks')
+@app.route('/makepicks', methods=['POST', 'GET'])
 @login_required
 def makepicks():
-    return render_template('makepicks.html')
+    global currentuser
+    error = None
+    gamesThisWeek = Boxscores(9, 2019)
+    # Prints a dictionary of all matchups for week 1 of 2017
+    
+    #games_today.game
+    Libary = gamesThisWeek._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(Libary[week+'-'+year])
+    games = []
+
+    for i in range(numberOfGames):
+        home = Libary['9-2019'][i]['home_name']
+        away = Libary['9-2019'][i]['away_name']
+        hmm = { 'Home':home,
+                'Away' : away
+            }
+        games.append(hmm)
+        
+    if request.method == 'POST':
+        pickspath = Path('picks/%s.csv' % currentuser)
+        if pickspath.is_file():
+            error = "You have already made picks for this week"
+        else:
+            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
+                picksOut.write(currentuser + ',')
+                for x in range(1,15):
+                    picksOut.write(request.form['row-%s' % str(x)] + ',')
+            return redirect(url_for('home'))
+    return render_template('makepicks.html',games = games, error=error, usersLeauges = usersLeauges)
 
 @app.route('/createleague', methods=['GET', 'POST'])
 @login_required
@@ -173,7 +203,7 @@ def teamOne():
         f = stef['9-2019'][i]['winning_name']
         winners.append(f)
     lens = len(winners)
-    return render_template('teamOne.html',lens = lens,winners = winners)
+    return render_template('teamOne.html',lens = lens,winners = winners, usersLeauges = usersLeauges)
 
 @app.route('/teamTwo', methods=['POST', 'GET'])
 @login_required
@@ -227,7 +257,7 @@ def teamThree():
                     }
             Leaders.append(NameScore)
     Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    return render_template('teamThree.html',Leaders = Leaders)
+    return render_template('teamThree.html',Leaders = Leaders, usersLeauges = usersLeauges)
 
 
 if __name__ == '__main__':
