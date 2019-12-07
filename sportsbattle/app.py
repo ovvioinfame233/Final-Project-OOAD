@@ -122,12 +122,12 @@ def makepicks(team):
         if pickspath.is_file():
             error = "You have already made picks for this week"
         else:
-            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
+            with open('picks/%s.csv' % team, 'a') as picksOut:
                 picksOut.write(currentuser + ',')
                 for x in range(1,15):
                     picksOut.write(request.form['row-%s' % str(x)] + ',')
             return redirect(url_for('home'))
-    return render_template('makepicks.html',games = games, error=error, usersLeauges = usersLeauges)
+    return render_template('makepicks.html',games = games, error=error, usersLeauges = usersLeauges, team=team)
 
 @app.route('/createleague', methods=['GET', 'POST'])
 @login_required
