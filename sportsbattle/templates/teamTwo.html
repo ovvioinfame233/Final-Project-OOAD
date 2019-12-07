@@ -115,13 +115,11 @@
                 <ul>
                     <form>
                     <table border="1" class='tabStuff'>
-                        {% set counter = 0 %}
                         {% for item in games %}
                         <tr>
-                            <td><label><input type="radio">{{ item.Home }}</label> </td>
-                            <td><label><input type="radio">{{ item.Away }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}">{{ item.Home }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}">{{ item.Away }}</label> </td>
                         </tr>
-                        {% set counter = counter + 1 %}
                         {% endfor %}
                     </table>
                     </form>
