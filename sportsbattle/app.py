@@ -6,6 +6,7 @@ import csv
 from sportsreference.nfl.boxscore import Boxscores
 import os
 from pathlib import Path
+from string import Template
 
 
 ### probaly in the main 
@@ -93,9 +94,9 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('login'))
 
-@app.route('/makepicks', methods=['POST', 'GET'])
+@app.route('/makepicks/<team>', methods=['POST', 'GET'])
 @login_required
-def makepicks():
+def makepicks(team):
     global currentuser
     error = None
     gamesThisWeek = Boxscores(9, 2019)

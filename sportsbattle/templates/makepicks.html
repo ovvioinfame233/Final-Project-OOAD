@@ -4,7 +4,7 @@
 <head>
     <title>Sports Battle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
         body {
             background-color: #388E3C;
@@ -112,7 +112,7 @@
     </nav>
     <div id="centertext">
         <br>
-        <h1 id="centertext">Make picks for League</h1>
+        <h1 id="centertext">Make picks for League {{team}}</h1>
         <button class="backBut" onclick="window.location.href='/home'">Back</button>
         {% if error %}
         <p id="text" class="error"><strong>Error:</strong> {{ error }}
