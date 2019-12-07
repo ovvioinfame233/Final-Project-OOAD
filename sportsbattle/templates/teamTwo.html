@@ -119,15 +119,15 @@
         <br>
         <div class="boxed">
             <h1 id="centertext">Team 2</h1>
-            <form>
+            <form action="" method="POST">
             <div class='tab'>
                 <ul>
                     
                     <table border="1" class='tabStuff'>
                         {% for item in games %}
                         <tr>
-                            <td><label><input type="radio" name="row-{{loop.index}}">{{ item.Home }}</label> </td>
-                            <td><label><input type="radio" name="row-{{loop.index}}">{{ item.Away }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}" required='required'>{{ item.Home }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}" required='required'>{{ item.Away }}</label> </td>
                         </tr>
                         {% endfor %}
                     </table>

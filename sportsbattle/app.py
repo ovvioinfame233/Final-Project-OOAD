@@ -161,7 +161,7 @@ def teamOne():
     lens = len(Pokemons)
     games_today = Boxscores(9, 2019)
     # Prints a dictionary of all matchups for week 1 of 2017
-    print(games_today.games)
+    #print(games_today.games)
     #games_today.game
     stef = games_today._boxscores
     week = "9"
@@ -194,6 +194,10 @@ def teamTwo():
                 'Away' : away
             }
         games.append(hmm)
+        
+    #This is where I need to put the stuff for the submit button
+    if request.method == 'POST':
+        return None
     return render_template('teamTwo.html',games = games)
 
 
