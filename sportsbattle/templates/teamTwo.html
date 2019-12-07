@@ -112,13 +112,19 @@
     </nav>
     <div id="centertext">
         <br>
-        <h1>Join League</h1>
+        <h1 id="centertext">{{usersLeauges[1]}}</h1>
         <button class="backBut" onclick="window.location.href='/home'">Back</button>
+        {% if error %}
+        <p id="text" class="error"><strong>Error:</strong> {{ error }}
+            {% endif %}
+    </div>
+    <br>
+    <div id='centertext'>
+            <button class="pickBut" type="button" onclick="window.location.href='/makepicks'">Make Picks</button>
     </div>
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-            <h1 id="centertext">Team 2</h1>
             <form action="" method="POST">
             <div class='tab'>
                 <ul>
@@ -126,8 +132,8 @@
                     <table border="1" class='tabStuff'>
                         {% for item in games %}
                         <tr>
-                            <td><label><input type="radio" name="row-{{loop.index}}" required='required'>{{ item.Home }}</label> </td>
-                            <td><label><input type="radio" name="row-{{loop.index}}" required='required'>{{ item.Away }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}" required='required' value='{{ item.Home }}'>{{ item.Home }}</label> </td>
+                            <td><label><input type="radio" name="row-{{loop.index}}" required='required' value='{{ item.Away }}'>{{ item.Away }}</label> </td>
                         </tr>
                         {% endfor %}
                     </table>

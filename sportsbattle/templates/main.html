@@ -80,6 +80,10 @@
         <button class="pickBut" type="button" onclick="window.location.href='/createleague'">Create League</button>
         <button class="pickBut" type="button" onclick="window.location.href='/joinleague'">Join League</button>
     </div>
+    <br>
+    <div id='centertext'>
+            <button class="pickBut" type="button" onclick="window.location.href='/home'">See Last Weeks Game Winners</button>
+    </div>
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
@@ -97,7 +101,7 @@
             {% endif %}
 
             {% if usersLeauges[2]|length > 0  %}
-            <div class="leadBox" onclick="window.location.href='/teamTwo'">{{usersLeauges[2]}}</div>
+            <div class="leadBox" onclick="window.location.href='/teamThree'">{{usersLeauges[2]}}</div>
             {% else %}
             <div class="leadBox" onclick="window.location.href='/joinleague'">Join a Leauge! </div>
             {% endif %}

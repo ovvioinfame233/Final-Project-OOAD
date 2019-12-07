@@ -5,6 +5,8 @@ from functools import wraps
 import csv
 from sportsreference.nfl.boxscore import Boxscores
 import os
+from pathlib import Path
+from string import Template
 
 
 
@@ -30,7 +32,7 @@ class Leg:
 #userpass = {'admin': 'admin'}
 #leaguenames = {'admin':'admin'}
 #currentuser = ""
-newcurrentuser = None
+currentuser = None
 #usersLeauges = []
 # Create the app object
 app = Flask(__name__)
@@ -63,14 +65,14 @@ def splash():
                 error = "User already exists."
                 return render_template('splash.html', error=error)
         if found == False:            
-            global newcurrentuser
+            global currentuser
             #userpass[request.form['username']] = request.form['password']
             newUser = User(request.form['username'],request.form['password'])
             session['logged_in'] = True
             userfile = open('users/%s.csv' % request.form['username'], 'w+')
             with open('userNames.csv', 'a') as names:
                 names.write(request.form['username']+','+request.form['password']+"\n")
-            newcurrentuser = newUser
+            currentuser = newUser
             Users.append(newUser)
             return redirect(url_for('home'))
     return render_template('splash.html', error=error)
@@ -80,7 +82,7 @@ def splash():
 @login_required
 
 def home():
-    return render_template('main.html',usersLeauges = newcurrentuser.usersCurrentLeauges)
+    return render_template('main.html',usersLeauges = currentuser.usersCurrentLeauges)
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -93,7 +95,7 @@ def login():
         for person in Users:
             if(person.username == request.form['username'] and person.password == request.form['password'] ):
                 found = True
-                global newcurrentuser
+                global currentuser
                 newcurrentuser = person
                 session['logged_in'] = True
                 full_path = os.path.realpath(__file__)
@@ -105,12 +107,12 @@ def login():
                         if(row != [] ):
                             for legCheck in Legs:
                                 if(legCheck.name == row[0]):
-                                    if newcurrentuser.usersCurrentLeauges[0] == "":
-                                        newcurrentuser.usersCurrentLeauges[0] = legCheck.name
-                                    elif newcurrentuser.usersCurrentLeauges[1] == "":
-                                        newcurrentuser.usersCurrentLeauges[1] = (legCheck.name)
-                                    elif newcurrentuser.usersCurrentLeauges[2] == "":
-                                        newcurrentuser.usersCurrentLeauges[2] = (legCheck.name)
+                                    if currentuser.usersCurrentLeauges[0] == "":
+                                        currentuser.usersCurrentLeauges[0] = legCheck.name
+                                    elif currentuser.usersCurrentLeauges[1] == "":
+                                        currentuser.usersCurrentLeauges[1] = (legCheck.name)
+                                    elif currentuser.usersCurrentLeauges[2] == "":
+                                        currentuser.usersCurrentLeauges[2] = (legCheck.name)
                
 
                 return redirect(url_for('home'))
@@ -122,14 +124,44 @@ def login():
 @login_required
 def logout():
     session.pop('logged_in', None)
-    global newcurrentuser
-    newcurrentuser = None
+    global currentuser
+    currentuser = None
     return redirect(url_for('login'))
 
-@app.route('/makepicks')
+@app.route('/makepicks/<team>', methods=['POST', 'GET'])
 @login_required
-def makepicks():
-    return render_template('makepicks.html')
+def makepicks(team):
+    global currentuser
+    error = None
+    gamesThisWeek = Boxscores(9, 2019)
+    # Prints a dictionary of all matchups for week 1 of 2017
+    
+    #games_today.game
+    Libary = gamesThisWeek._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(Libary[week+'-'+year])
+    games = []
+    global currentuser
+    for i in range(numberOfGames):
+        home = Libary['9-2019'][i]['home_name']
+        away = Libary['9-2019'][i]['away_name']
+        hmm = { 'Home':home,
+                'Away' : away
+            }
+        games.append(hmm)
+        
+    if request.method == 'POST':
+        pickspath = Path('picks/%s.csv' % currentuser)
+        if pickspath.is_file():
+            error = "You have already made picks for this week"
+        else:
+            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
+                picksOut.write(currentuser + ',')
+                for x in range(1,15):
+                    picksOut.write(request.form['row-%s' % str(x)] + ',')
+            return redirect(url_for('home'))
+    return render_template('makepicks.html',games = games, error=error, usersLeauges = currentuser.usersCurrentLeauges )
 
 @app.route('/createleague', methods=['GET', 'POST'])
 @login_required
@@ -139,7 +171,7 @@ def createleague():
         for LegCheck in Legs:
             if request.form['leagueName'] == LegCheck.name:
                 error = "Leauge Name Taken"
-            elif len(newcurrentuser.usersCurrentLeauges) >= 3:
+            elif len(currentuser.usersCurrentLeauges) >= 3:
                 error = "You can only be in 3 Leauges at once"
             else:
                 #leaguenames[request.form['leagueName']] = request.form['leagueCode']
@@ -150,18 +182,18 @@ def createleague():
                     # fieldnames = ['username', 'score']
                     # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
                     # writer.writerow({'username' : currentuser, 'score' : 0 })
-                    leagueOutfile.write(newcurrentuser.username+','+'0'+'\n')
-                with open('users/%s.csv' % newcurrentuser.username, 'a') as out:
+                    leagueOutfile.write(currentuser.username+','+'0'+'\n')
+                with open('users/%s.csv' % currentuser.username, 'a') as out:
                     # fieldnames = ['league', 'score']
                     # writer = csv.DictWriter(out, fieldnames=fieldnames)
                     # writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
                     out.write(request.form['leagueName']+','+'0'+'\n')
-                    if newcurrentuser.usersCurrentLeauges[0] == "":
-                        newcurrentuser.usersCurrentLeauges[0]=(newLeg.name)
-                    elif newcurrentuser.usersCurrentLeauges[1] == "":
-                        newcurrentuser.usersCurrentLeauges[1]=(newLeg.name)
-                    elif newcurrentuser.usersCurrentLeauges[2] == "":
-                        newcurrentuser.usersCurrentLeauges[2]=(newLeg).name
+                    if currentuser.usersCurrentLeauges[0] == "":
+                        currentuser.usersCurrentLeauges[0]=(newLeg.name)
+                    elif currentuser.usersCurrentLeauges[1] == "":
+                        currentuser.usersCurrentLeauges[1]=(newLeg.name)
+                    elif currentuser.usersCurrentLeauges[2] == "":
+                        currentuser.usersCurrentLeauges[2]=(newLeg).name
                 Legs.append(newLeg)
                 return redirect(url_for('home'))
 
@@ -173,7 +205,7 @@ def joinleague():
     error = None
     if request.method == 'POST':
         found = False
-        if len(newcurrentuser.usersCurrentLeauges) >= 3:
+        if len(currentuser.usersCurrentLeauges) >= 3:
             error = "You can only be in 3 Leauges at once"
             return render_template('joinleague.html', error=error)
         for legCheck in Legs:
@@ -183,18 +215,18 @@ def joinleague():
                     # fieldnames = ['username', 'score']
                     # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
                     # writer.writerow({'username' : currentuser, 'score' : 0 })
-                    leagueOutfile.write(newcurrentuser.username+','+'0'+'\n')
-                with open('users/%s.csv' % newcurrentuser.username, 'a') as out:
+                    leagueOutfile.write(currentuser.username+','+'0'+'\n')
+                with open('users/%s.csv' % currentuser.username, 'a') as out:
                     # fieldnames = ['league', 'score']
                     # writer = csv.DictWriter(out, fieldnames=fieldnames)
                     # writer.writerow({'league' : key, 'score' : 0})
                     out.write( legCheck.name+','+'0'+'\n')
-                    if newcurrentuser.usersCurrentLeauges[0] == "":
-                        newcurrentuser.usersCurrentLeauges[0]=(legCheck.name)
-                    elif newcurrentuser.usersCurrentLeauges[1] == "":
-                        newcurrentuser.usersCurrentLeauges[1]=(legCheck.name)
-                    elif newcurrentuser.usersCurrentLeauges[2] == "":
-                        newcurrentuser.usersCurrentLeauges[2]=(legCheck.name)
+                    if currentuser.usersCurrentLeauges[0] == "":
+                        currentuser.usersCurrentLeauges[0]=(legCheck.name)
+                    elif currentuser.usersCurrentLeauges[1] == "":
+                        currentuser.usersCurrentLeauges[1]=(legCheck.name)
+                    elif currentuser.usersCurrentLeauges[2] == "":
+                        currentuser.usersCurrentLeauges[2]=(legCheck.name)
                 return redirect(url_for('home'))
         if found == False:
             error = "Incorrect League Code"
@@ -219,11 +251,13 @@ def teamOne():
         f = stef['9-2019'][i]['winning_name']
         winners.append(f)
     lens = len(winners)
-    return render_template('teamOne.html',lens = lens,winners = winners)
+    return render_template('teamOne.html',lens = lens,winners = winners, usersLeauges = currentuser.usersCurrentLeauges )
 
-@app.route('/teamTwo')
+@app.route('/teamTwo', methods=['POST', 'GET'])
 @login_required
 def teamTwo():
+    global currentuser
+    error = None
     gamesThisWeek = Boxscores(9, 2019)
     # Prints a dictionary of all matchups for week 1 of 2017
     
@@ -242,10 +276,17 @@ def teamTwo():
             }
         games.append(hmm)
         
-    #This is where I need to put the stuff for the submit button
     if request.method == 'POST':
-        return None
-    return render_template('teamTwo.html',games = games)
+        pickspath = Path('picks/%s.csv' % currentuser)
+        if pickspath.is_file():
+            error = "You have already made picks for this week"
+        else:
+            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
+                picksOut.write(currentuser + ',')
+                for x in range(1,15):
+                    picksOut.write(request.form['row-%s' % str(x)] + ',')
+            return redirect(url_for('home'))
+    return render_template('teamTwo.html',games = games, error=error, usersLeauges = currentuser.usersLeauges )
 
 
 
@@ -264,7 +305,7 @@ def teamThree():
                     }
             Leaders.append(NameScore)
     Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    return render_template('teamThree.html',Leaders = Leaders)
+    return render_template('teamThree.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
 
 
 if __name__ == '__main__':
