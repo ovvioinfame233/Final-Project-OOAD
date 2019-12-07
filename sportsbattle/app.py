@@ -5,6 +5,7 @@ from functools import wraps
 import csv
 from sportsreference.nfl.boxscore import Boxscores
 import os
+from pathlib import Path
 
 
 ### probaly in the main 
@@ -90,7 +91,7 @@ def login():
 @login_required
 def logout():
     session.pop('logged_in', None)
-    return redirect(url_for('splash'))
+    return redirect(url_for('login'))
 
 @app.route('/makepicks')
 @login_required
@@ -174,9 +175,11 @@ def teamOne():
     lens = len(winners)
     return render_template('teamOne.html',lens = lens,winners = winners)
 
-@app.route('/teamTwo')
+@app.route('/teamTwo', methods=['POST', 'GET'])
 @login_required
 def teamTwo():
+    global currentuser
+    error = None
     gamesThisWeek = Boxscores(9, 2019)
     # Prints a dictionary of all matchups for week 1 of 2017
     
@@ -195,10 +198,17 @@ def teamTwo():
             }
         games.append(hmm)
         
-    #This is where I need to put the stuff for the submit button
     if request.method == 'POST':
-        return None
-    return render_template('teamTwo.html',games = games)
+        pickspath = Path('picks/%s.csv' % currentuser)
+        if pickspath.is_file():
+            error = "You have already made picks for this week"
+        else:
+            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
+                picksOut.write(currentuser + ',')
+                for x in range(1,15):
+                    picksOut.write(request.form['row-%s' % str(x)] + ',')
+            return redirect(url_for('home'))
+    return render_template('teamTwo.html',games = games, error=error, usersLeauges = usersLeauges)
 
 
 
