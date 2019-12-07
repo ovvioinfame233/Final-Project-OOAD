@@ -118,8 +118,8 @@ def makepicks(team):
         games.append(hmm)
         
     if request.method == 'POST':
-        pickspath = Path('picks/%s.csv' % currentuser)
-        if pickspath.is_file():
+        pickspath = Path('picks/%s.csv' % team)
+        if not pickspath.is_file():
             error = "You have already made picks for this week"
         else:
             with open('picks/%s.csv' % team, 'a') as picksOut:
