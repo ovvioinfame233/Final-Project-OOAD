@@ -161,7 +161,7 @@ def makepicks(team):
                 for x in range(1,15):
                     picksOut.write(request.form['row-%s' % str(x)] + ',')
             return redirect(url_for('home'))
-    return render_template('makepicks.html',games = games, error=error, usersLeauges = usersLeauges, team=team)
+    return render_template('makepicks.html',games = games, error=error, usersLeauges = currentuser.usersCurrentLeauges, team=team)
 
 @app.route('/createleague', methods=['GET', 'POST'])
 @login_required
