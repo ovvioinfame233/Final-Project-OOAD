@@ -235,69 +235,61 @@ def joinleague():
 @app.route('/teamOne',methods = ['POST', 'GET'])
 @login_required
 def teamOne():
-    # Prints a dictionary of all matchups for week 1 of 2017 
-    #Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
-    #lens = len(Pokemons)
-    games_today = Boxscores(9, 2019)
-    # Prints a dictionary of all matchups for week 1 of 2017
-    #print(games_today.games)
-    #games_today.game
-    stef = games_today._boxscores
-    week = "9"
-    year = "2019"
-    numberOfGames = len(stef[week+'-'+year])
-    winners = []
-    for i in range(numberOfGames):
-        f = stef['9-2019'][i]['winning_name']
-        winners.append(f)
-    lens = len(winners)
-    return render_template('teamOne.html',lens = lens,winners = winners, usersLeauges = currentuser.usersCurrentLeauges )
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/leagues"
+    Leaders = []
+    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[0], 'r') as csv_file:
+        
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            NameScore = {'Name': row[0],
+                         'Score' : int(row[1])    
+                    }
+            Leaders.append(NameScore)
+    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
+    print(Leaders)
+    return render_template('teamOne.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
 
 @app.route('/teamTwo', methods=['POST', 'GET'])
 @login_required
 def teamTwo():
-    global currentuser
-    error = None
-    gamesThisWeek = Boxscores(9, 2019)
-    # Prints a dictionary of all matchups for week 1 of 2017
-    
-    #games_today.game
-    Libary = gamesThisWeek._boxscores
-    week = "9"
-    year = "2019"
-    numberOfGames = len(Libary[week+'-'+year])
-    games = []
-
-    for i in range(numberOfGames):
-        home = Libary['9-2019'][i]['home_name']
-        away = Libary['9-2019'][i]['away_name']
-        hmm = { 'Home':home,
-                'Away' : away
-            }
-        games.append(hmm)
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/leagues"
+    Leaders = []
+    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[1], 'r') as csv_file:
         
-    if request.method == 'POST':
-        pickspath = Path('picks/%s.csv' % currentuser)
-        if pickspath.is_file():
-            error = "You have already made picks for this week"
-        else:
-            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
-                picksOut.write(currentuser + ',')
-                for x in range(1,15):
-                    picksOut.write(request.form['row-%s' % str(x)] + ',')
-            return redirect(url_for('home'))
-    return render_template('teamTwo.html',games = games, error=error, usersLeauges = currentuser.usersCurrentLeauges )
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            NameScore = {'Name': row[0],
+                         'Score' : int(row[1])    
+                    }
+            Leaders.append(NameScore)
+    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
+    print(Leaders)
+    return render_template('teamTwo.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
+
+@app.route('/teamThree')
+@login_required
+def teamThree():
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/leagues"
+    Leaders = []
+    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[2], 'r') as csv_file:
+
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            NameScore = {'Name': row[0],
+                         'Score' : int(row[1])    
+                    }
+            Leaders.append(NameScore)
+    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
+    
+    return render_template('teamThree.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
 
 @app.route('/lastweek')
 @login_required
 def lastweek():
-    # Prints a dictionary of all matchups for week 1 of 2017 
-    #Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
-    #lens = len(Pokemons)
     games_today = Boxscores(9, 2019)
-    # Prints a dictionary of all matchups for week 1 of 2017
-    #print(games_today.games)
-    #games_today.game
     stef = games_today._boxscores
     week = "9"
     year = "2019"
@@ -308,24 +300,6 @@ def lastweek():
         winners.append(f)
     lens = len(winners)
     return render_template('lastweek.html',lens = lens,winners = winners, usersLeauges = currentuser.usersCurrentLeauges )
-
-
-@app.route('/teamThree')
-@login_required
-def teamThree():
-    full_path = os.path.realpath(__file__)
-    directory = os.path.dirname(full_path)+"/leagues"
-    Leaders = []
-    with open(directory+'/league1.csv', 'r') as csv_file:
-
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            NameScore = {'Name': row[0],
-                         'Score' : int(row[1])    
-                    }
-            Leaders.append(NameScore)
-    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    return render_template('teamThree.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
 
 
 if __name__ == '__main__':

@@ -79,6 +79,7 @@
 
         .tabStuff {
             table-layout: fixed;
+            width: 100%;
         }
 
         .tabStuff td,
@@ -88,13 +89,6 @@
             height: 50px;
             border-color: #AEEA00;
             color: #AEEA00;
-        }
-        #butt {
-            background-color: #388E3C;
-            color: #AEEA00;
-            border-radius: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            text-align: center;
         }
     </style>
 </head>
@@ -130,16 +124,15 @@
                 <ul>
                     
                     <table border="1" class='tabStuff'>
-                        {% for item in games %}
+                        {% for item in Leaders %}
                         <tr>
-                            <td><label><input type="radio" name="row-{{loop.index}}" required='required' value='{{ item.Home }}'>{{ item.Home }}</label> </td>
-                            <td><label><input type="radio" name="row-{{loop.index}}" required='required' value='{{ item.Away }}'>{{ item.Away }}</label> </td>
+                                <th> {{ item.Name }} </th>
+                                <td> {{ item.Score }} </td>
                         </tr>
                         {% endfor %}
                     </table>
                 </ul>
             </div>
-            <input class="btn btn-default" id="butt" type="submit" value="Submit Picks">
         </form>
         </div>
     </div>

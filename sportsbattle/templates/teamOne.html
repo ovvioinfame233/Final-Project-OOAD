@@ -67,6 +67,26 @@
             width: 75px;
             color: #AEEA00;
         }
+        .tab {
+            height: 300px;
+            overflow-y: scroll;
+            display: block;
+            margin-left: -50px;
+            margin-right: -50px;
+        }
+
+        .tabStuff {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .tabStuff td,
+        th {
+            overflow: hidden;
+            white-space: nowrap;
+            height: 50px;
+            border-color: #AEEA00;
+            color: #AEEA00;
+        }
     </style>
 </head>
 
@@ -93,14 +113,19 @@
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-            <ol> 
+            <div class='tab'>
+            <ul> 
+                <table border="1" class='tabStuff'>
                 <!-- For loop logic of jinja template -->
-                {%for i in range(0, lens)%} 
-                  
-                    <li>{{winners[i]}}</li> 
+                {%for item in Leaders%} 
+                <tr>
+                        <th> {{ item.Name }} </th>
+                        <td> {{ item.Score }} </td>
+                     </tr>
                 {%endfor%} 
-                  
-                </ol> 
+                  </table>
+                </ul> 
+            </div>
         </div>
     </div>
 </body>
