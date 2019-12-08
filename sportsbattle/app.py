@@ -96,11 +96,11 @@ def login():
             if(person.username == request.form['username'] and person.password == request.form['password'] ):
                 found = True
                 global currentuser
-                newcurrentuser = person
+                currentuser = person
                 session['logged_in'] = True
                 full_path = os.path.realpath(__file__)
                 directory = os.path.dirname(full_path)+"/Users"
-                with open(directory+"/"+newcurrentuser.username+".csv", 'r') as csv_file:
+                with open(directory+"/"+currentuser.username+".csv", 'r') as csv_file:
                     count = 0
                     csv_reader = csv.reader(csv_file, delimiter=',')
                     for row in csv_reader:
@@ -286,7 +286,7 @@ def teamTwo():
                 for x in range(1,15):
                     picksOut.write(request.form['row-%s' % str(x)] + ',')
             return redirect(url_for('home'))
-    return render_template('teamTwo.html',games = games, error=error, usersLeauges = currentuser.usersLeauges )
+    return render_template('teamTwo.html',games = games, error=error, usersLeauges = currentuser.usersCurrentLeauges )
 
 
 
