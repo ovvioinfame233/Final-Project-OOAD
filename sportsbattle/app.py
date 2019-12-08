@@ -152,12 +152,12 @@ def makepicks(team):
         games.append(hmm)
         
     if request.method == 'POST':
-        pickspath = Path('picks/%s.csv' % currentuser)
+        pickspath = Path('picks/%s.csv' % team)
         if pickspath.is_file():
             error = "You have already made picks for this week"
         else:
-            with open('picks/%s.csv' % currentuser, 'a') as picksOut:
-                picksOut.write(currentuser + ',')
+            with open('picks/%s.csv' % team, 'a') as picksOut:
+                picksOut.write(currentuser.Name + ',')
                 for x in range(1,15):
                     picksOut.write(request.form['row-%s' % str(x)] + ',')
             return redirect(url_for('home'))
