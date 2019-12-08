@@ -9,12 +9,6 @@ from pathlib import Path
 from string import Template
 
 
-
-### probaly in the main 
-## as soon as the app starts
-## read all the user files
-## append to userpass
-
 class User:
     usersCurrentLeauges = ["","",""]
     def __init__(self, username, password):
@@ -28,12 +22,7 @@ class Leg:
         self.name = Name
         self.Code = Code
 
-
-#userpass = {'admin': 'admin'}
-#leaguenames = {'admin':'admin'}
-#currentuser = ""
 currentuser = None
-#usersLeauges = []
 # Create the app object
 app = Flask(__name__)
 app.debug = True
@@ -66,7 +55,6 @@ def splash():
                 return render_template('splash.html', error=error)
         if found == False:            
             global currentuser
-            #userpass[request.form['username']] = request.form['password']
             newUser = User(request.form['username'],request.form['password'])
             session['logged_in'] = True
             userfile = open('users/%s.csv' % request.form['username'], 'w+')
@@ -88,9 +76,6 @@ def home():
 def login():
     error = None
     if request.method == 'POST':
-        
-        # if request.form['username'] not in userpass.keys() or request.form['password'] not in userpass.values():
-        #     error = "Invalid Creds, try again."
         found = False
         for person in Users:
             if(person.username == request.form['username'] and person.password == request.form['password'] ):
@@ -113,8 +98,6 @@ def login():
                                         currentuser.usersCurrentLeauges[1] = (legCheck.name)
                                     elif currentuser.usersCurrentLeauges[2] == "":
                                         currentuser.usersCurrentLeauges[2] = (legCheck.name)
-               
-
                 return redirect(url_for('home'))
         if ( found == False):
             error = "User or Password not found."
@@ -133,10 +116,7 @@ def logout():
 def makepicks(team):
     global currentuser
     error = None
-    gamesThisWeek = Boxscores(9, 2019)
-    # Prints a dictionary of all matchups for week 1 of 2017
-    
-    #games_today.game
+    gamesThisWeek = Boxscores(9, 2019)    
     Libary = gamesThisWeek._boxscores
     week = "9"
     year = "2019"
@@ -174,19 +154,12 @@ def createleague():
             elif len(currentuser.usersCurrentLeauges) >= 3:
                 error = "You can only be in 3 Leauges at once"
             else:
-                #leaguenames[request.form['leagueName']] = request.form['leagueCode']
                 newLeg = Leg(request.form['leagueName'],request.form['leagueCode'])
                 with open('leagueNames.csv', 'a') as outfile:
                     outfile.writelines(request.form['leagueName']+','+request.form['leagueCode']+"\n")
                 with open('leagues/%s.csv' % request.form['leagueName'], 'a') as leagueOutfile:
-                    # fieldnames = ['username', 'score']
-                    # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
-                    # writer.writerow({'username' : currentuser, 'score' : 0 })
                     leagueOutfile.write(currentuser.username+','+'0'+'\n')
                 with open('users/%s.csv' % currentuser.username, 'a') as out:
-                    # fieldnames = ['league', 'score']
-                    # writer = csv.DictWriter(out, fieldnames=fieldnames)
-                    # writer.writerow({'league' : request.form['leagueName'], 'score' : 0})
                     out.write(request.form['leagueName']+','+'0'+'\n')
                     if currentuser.usersCurrentLeauges[0] == "":
                         currentuser.usersCurrentLeauges[0]=(newLeg.name)
@@ -212,14 +185,8 @@ def joinleague():
             if request.form['leagueCode'] == legCheck.Code:
                 found = True
                 with open('leagues/%s.csv' % legCheck.name , 'a') as leagueOutfile:
-                    # fieldnames = ['username', 'score']
-                    # writer = csv.DictWriter(leagueOutfile, fieldnames=fieldnames)
-                    # writer.writerow({'username' : currentuser, 'score' : 0 })
                     leagueOutfile.write(currentuser.username+','+'0'+'\n')
                 with open('users/%s.csv' % currentuser.username, 'a') as out:
-                    # fieldnames = ['league', 'score']
-                    # writer = csv.DictWriter(out, fieldnames=fieldnames)
-                    # writer.writerow({'league' : key, 'score' : 0})
                     out.write( legCheck.name+','+'0'+'\n')
                     if currentuser.usersCurrentLeauges[0] == "":
                         currentuser.usersCurrentLeauges[0]=(legCheck.name)
@@ -308,16 +275,12 @@ if __name__ == '__main__':
     for row in infileleagues:
         info = row.split(',')
         info[1] = info[1].strip('\n')
-        #leaguenames[info[0]] = info[1]
         newLeg = Leg(info[0],info[1])
         Legs.append(newLeg)
     infileusers = open('userNames.csv', 'r')
     for row2 in infileusers:
         info2 = row2.split(',')
         info2[1] = info2[1].strip('\n')
-        #userpass[info2[0]] = info2[1]
         newUser = User(info2[0],info2[1])
         Users.append(newUser)
-    ##This is where we're going to need to add the capability to read the games that week
-    ##This is also probably where we're going to put all our data for the games and stuff
     app.run(use_reloader = True,debug=True)
