@@ -67,6 +67,26 @@
             width: 75px;
             color: #AEEA00;
         }
+        .tab {
+            height: 300px;
+            overflow-y: scroll;
+            display: block;
+            margin-left: -50px;
+            margin-right: -50px;
+        }
+
+        .tabStuff {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .tabStuff td,
+        th {
+            overflow: hidden;
+            white-space: nowrap;
+            height: 50px;
+            border-color: #AEEA00;
+            color: #AEEA00;
+        }
     </style>
 </head>
 
@@ -88,12 +108,14 @@
     </div>
     <br>
     <div id='centertext'>
-            <button class="pickBut" type="button" onclick="window.location.href='/makepicks/{{usersLeauges[2]}}'">Make Picks</button>
+            <button class="pickBut" type="button" onclick="window.location.href='/makepicks/{{usersLeauges[2]}}'">Make Picks for Next Week</button>
     </div>
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-                <table border = 1>
+            <div class='tab'>
+            <ul>
+                <table border = "1" class='tabStuff'>
                         {% for item in Leaders %}
                            <tr>
                               <th> {{ item.Name }} </th>
@@ -101,6 +123,8 @@
                            </tr>
                         {% endfor %}
                      </table>
+            </ul>
+            </div>
         </div>
     </div>
 </body>

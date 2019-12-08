@@ -236,8 +236,8 @@ def joinleague():
 @login_required
 def teamOne():
     # Prints a dictionary of all matchups for week 1 of 2017 
-    Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
-    lens = len(Pokemons)
+    #Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
+    #lens = len(Pokemons)
     games_today = Boxscores(9, 2019)
     # Prints a dictionary of all matchups for week 1 of 2017
     #print(games_today.games)
@@ -288,6 +288,26 @@ def teamTwo():
             return redirect(url_for('home'))
     return render_template('teamTwo.html',games = games, error=error, usersLeauges = currentuser.usersCurrentLeauges )
 
+@app.route('/lastweek')
+@login_required
+def lastweek():
+    # Prints a dictionary of all matchups for week 1 of 2017 
+    #Pokemons =["Pikachu", "Charizard", "Squirtle", "Jigglypuff", "Bulbasaur", "Gengar", "Charmander", "Mew", "Lugia", "Gyarados"] 
+    #lens = len(Pokemons)
+    games_today = Boxscores(9, 2019)
+    # Prints a dictionary of all matchups for week 1 of 2017
+    #print(games_today.games)
+    #games_today.game
+    stef = games_today._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(stef[week+'-'+year])
+    winners = []
+    for i in range(numberOfGames):
+        f = stef['9-2019'][i]['winning_name']
+        winners.append(f)
+    lens = len(winners)
+    return render_template('lastweek.html',lens = lens,winners = winners, usersLeauges = currentuser.usersCurrentLeauges )
 
 
 @app.route('/teamThree')

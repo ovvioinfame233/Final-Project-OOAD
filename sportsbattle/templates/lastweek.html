@@ -67,6 +67,27 @@
             width: 75px;
             color: #AEEA00;
         }
+
+        .tab {
+            height: 300px;
+            overflow-y: scroll;
+            display: block;
+            margin-left: -50px;
+            margin-right: -50px;
+        }
+
+        .tabStuff {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .tabStuff td,
+        th {
+            overflow: hidden;
+            white-space: nowrap;
+            height: 50px;
+            border-color: #AEEA00;
+            color: #AEEA00;
+        }
     </style>
 </head>
 
@@ -83,24 +104,25 @@
     </nav>
     <div id="centertext">
             <br>
-            <h1 id="centertext">{{usersLeauges[0]}}</h1>
+            <h1 id="centertext">Last Weeks Game Winners</h1>
         <button class="backBut" onclick="window.location.href='/home'">Back</button>
     </div>
     <br>
-    <div id='centertext'>
-            <button class="pickBut" type="button" onclick="window.location.href='/makepicks/{{usersLeauges[0]}}'">Make Picks for Next Week</button>
-    </div>
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
-            <ol> 
+            <div class='tab'>
+            <ul> 
+                <table border="1" class='tabStuff'>
                 <!-- For loop logic of jinja template -->
                 {%for i in range(0, lens)%} 
-                  
-                    <li>{{winners[i]}}</li> 
+                  <tr>
+                    <th>{{winners[i]}}</th> 
+                    </tr>
                 {%endfor%} 
-                  
-                </ol> 
+                </table>
+                </ul> 
+                </div>
         </div>
     </div>
 </body>
