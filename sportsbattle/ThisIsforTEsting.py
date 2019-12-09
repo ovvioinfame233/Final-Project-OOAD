@@ -36,21 +36,37 @@ found = True
 
 newcurrentuser = Users[0]
 
+# full_path = os.path.realpath(__file__)
+# directory = os.path.dirname(full_path)+"/picks"
+# with open(directory+"/"+newcurrentuser.username+".csv", 'r') as csv_file:
+    # count = 0
+    # csv_reader = csv.reader(csv_file, delimiter=',')
+    # for row in csv_reader:
+    #     if(row != [] ):
+    #         for legCheck in Legs:
+    #             if(legCheck.name == row[0]):
+    #                 if newcurrentuser.usersCurrentLeauges[0] == "":
+    #                     newcurrentuser.usersCurrentLeauges[0] = legCheck
+    #                 elif newcurrentuser.usersCurrentLeauges[1] == "":
+    #                     newcurrentuser.usersCurrentLeauges[1] = (legCheck)
+    #                 elif newcurrentuser.usersCurrentLeauges[2] == "":
+    #                     newcurrentuser.usersCurrentLeauges[2] = (legCheck)
+alreadyPicked = []
+# with open('picks/%s.csv' % "test1", 'a') as leagueOutfile:
+#     for row2 in leagueOutfile:
+#         info = row2.split(',')
+#         WhoPicked = info[0]
+#         alreadyPicked.append(WhoPicked)
+
+
 full_path = os.path.realpath(__file__)
-directory = os.path.dirname(full_path)+"/Users"
-with open(directory+"/"+newcurrentuser.username+".csv", 'r') as csv_file:
-    count = 0
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    for row in csv_reader:
-        if(row != [] ):
-            for legCheck in Legs:
-                if(legCheck.name == row[0]):
-                    if newcurrentuser.usersCurrentLeauges[0] == "":
-                        newcurrentuser.usersCurrentLeauges[0] = legCheck
-                    elif newcurrentuser.usersCurrentLeauges[1] == "":
-                        newcurrentuser.usersCurrentLeauges[1] = (legCheck)
-                    elif newcurrentuser.usersCurrentLeauges[2] == "":
-                        newcurrentuser.usersCurrentLeauges[2] = (legCheck)
+directory = os.path.dirname(full_path)+"/picks"
+with open(directory+"/"+"test1"+".csv", 'r') as csv_file:
+     for row2 in csv_file:
+        info = row2.split(',')
+        WhoPicked = info[0]
+        alreadyPicked.append(WhoPicked)
+
 
 
 stef = 5
