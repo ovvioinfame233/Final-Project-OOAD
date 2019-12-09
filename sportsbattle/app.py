@@ -7,7 +7,15 @@ from sportsreference.nfl.boxscore import Boxscores
 import os
 from pathlib import Path
 from string import Template
+class PickChecker:
+    def __init__(self, username, picks):
+        self.username = username
+        self.picks = picks
 
+class LeadboardRow:
+    def __init__(self, username, score):
+        self.username = username
+        self.score = score
 ## user class fro each user
 class User:
     usersCurrentLeauges = ["","",""]
@@ -128,16 +136,16 @@ def logout():
 def makepicks(team):
     global currentuser
     error = None
-    gamesThisWeek = Boxscores(9, 2019)    
+    gamesThisWeek = Boxscores(14, 2019)    
     Libary = gamesThisWeek._boxscores
-    week = "9"
+    week = "14"
     year = "2019"
     numberOfGames = len(Libary[week+'-'+year])
     games = []
     global currentuser
     for i in range(numberOfGames):
-        home = Libary['9-2019'][i]['home_name']
-        away = Libary['9-2019'][i]['away_name']
+        home = Libary['14-2019'][i]['home_name']
+        away = Libary['14-2019'][i]['away_name']
         hmm = { 'Home':home,
                 'Away' : away
             }
@@ -156,7 +164,7 @@ def makepicks(team):
             error = "You have already made your picks this week"
             return render_template('main.html',usersLeauges = currentuser.usersCurrentLeauges,error = error)
         else:
-            with open('picks/%s.csv' % team, 'a+') as picksOut:
+            with open('picks/%s.csv' % team, 'a') as picksOut:
                 picksOut.write(currentuser.username + ',')
                 for x in range(1,15):
                     picksOut.write(request.form['row-%s' % str(x)] + ',')
@@ -228,69 +236,208 @@ def joinleague():
 @app.route('/teamOne',methods = ['POST', 'GET'])
 @login_required
 def teamOne():
+    PickCheckerList = []
     full_path = os.path.realpath(__file__)
-    directory = os.path.dirname(full_path)+"/leagues"
-    Leaders = []
+    directory = os.path.dirname(full_path)+"/picks"
+    ListofPickCheckers = []
     with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[0], 'r') as csv_file:
-        
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
-            NameScore = {'Name': row[0],
-                         'Score' : int(row[1])    
-                    }
-            Leaders.append(NameScore)
-    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    print(Leaders)
-    return render_template('teamOne.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
-## will be the league scoreboard
-@app.route('/teamTwo', methods=['POST', 'GET'])
-@login_required
-def teamTwo():
-    full_path = os.path.realpath(__file__)
-    directory = os.path.dirname(full_path)+"/leagues"
-    Leaders = []
-    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[1], 'r') as csv_file:
-        
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            NameScore = {'Name': row[0],
-                         'Score' : int(row[1])    
-                    }
-            Leaders.append(NameScore)
-    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    print(Leaders)
-    return render_template('teamTwo.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
-## will be the league scoreboard
-@app.route('/teamThree')
-@login_required
-def teamThree():
-    full_path = os.path.realpath(__file__)
-    directory = os.path.dirname(full_path)+"/leagues"
-    Leaders = []
-    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[2], 'r') as csv_file:
+            ListOfWinners = []
+            if len(row) != 0:
+                name = row[0]
+                RedoRow = row
+                RedoRow.pop(0)
+                for item in RedoRow:
+                    if item != '':
+                        ListOfWinners.append(item)
+                Done = PickChecker(name,ListOfWinners)
+                PickCheckerList.append(Done)
 
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            NameScore = {'Name': row[0],
-                         'Score' : int(row[1])    
-                    }
-            Leaders.append(NameScore)
-    Leaders = sorted(Leaders, key = lambda i: i['Score'],reverse=True) 
-    
-    return render_template('teamThree.html',Leaders = Leaders, usersLeauges = currentuser.usersCurrentLeauges )
-
-## shows who won the games last week.
-@app.route('/lastweek')
-@login_required
-def lastweek():
     games_today = Boxscores(9, 2019)
     stef = games_today._boxscores
     week = "9"
     year = "2019"
     numberOfGames = len(stef[week+'-'+year])
     winners = []
+    ListOfLeadboardRow = []
     for i in range(numberOfGames):
         f = stef['9-2019'][i]['winning_name']
+        winners.append(f)
+
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[0], 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            row = LeadboardRow(row[0],int(row[1]))
+            ListOfLeadboardRow.append(row)
+
+    for item in PickCheckerList:
+            count = 0
+            for WinnerPicked in item.picks:
+                if WinnerPicked in winners:
+                    count = count + 1
+            for LeadboardRowCheck in ListOfLeadboardRow:
+                if LeadboardRowCheck.username == item.username:
+                    LeadboardRowCheck.score = int(LeadboardRowCheck.score) + count
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[0], 'w') as csv_file:
+        for item in ListOfLeadboardRow:
+            csv_file.write(str(item.username)+","+str(item.score)+"\n")
+    directory = os.path.dirname(full_path)+"/picks"
+    empty = False
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[0], 'a+') as csv_file:
+        emptycheck = csv_file.read(1)
+        if not emptycheck:
+            empty = True
+    if empty == False:
+        with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[0], 'w+') as csv_file:
+            NeedThisForIndent = 5
+
+    ListOfLeadboardRow.sort(key= lambda x: x.score , reverse=True)
+    return render_template('teamOne.html',Leaders = ListOfLeadboardRow, usersLeauges = currentuser.usersCurrentLeauges )
+## will be the league scoreboard
+@app.route('/teamTwo', methods=['POST', 'GET'])
+@login_required
+def teamTwo():
+    PickCheckerList = []
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/picks"
+    ListofPickCheckers = []
+    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[1], 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            ListOfWinners = []
+            if len(row) != 0:
+                name = row[0]
+                RedoRow = row
+                RedoRow.pop(0)
+                for item in RedoRow:
+                    if item != '':
+                        ListOfWinners.append(item)
+                Done = PickChecker(name,ListOfWinners)
+                PickCheckerList.append(Done)
+
+    games_today = Boxscores(9, 2019)
+    stef = games_today._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(stef[week+'-'+year])
+    winners = []
+    ListOfLeadboardRow = []
+    for i in range(numberOfGames):
+        f = stef['9-2019'][i]['winning_name']
+        winners.append(f)
+
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[1], 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            row = LeadboardRow(row[0],int(row[1]))
+            ListOfLeadboardRow.append(row)
+
+    for item in PickCheckerList:
+            count = 0
+            for WinnerPicked in item.picks:
+                if WinnerPicked in winners:
+                    count = count + 1
+            for LeadboardRowCheck in ListOfLeadboardRow:
+                if LeadboardRowCheck.username == item.username:
+                    LeadboardRowCheck.score = int(LeadboardRowCheck.score) + count
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[1], 'w') as csv_file:
+        for item in ListOfLeadboardRow:
+            csv_file.write(str(item.username)+","+str(item.score)+"\n")
+    directory = os.path.dirname(full_path)+"/picks"
+    empty = False
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[1], 'a+') as csv_file:
+        emptycheck = csv_file.read(1)
+        if not emptycheck:
+            empty = True
+    if empty == False:
+        with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[1], 'w+') as csv_file:
+            NeedThisForIndent = 5
+
+    ListOfLeadboardRow.sort(key= lambda x: x.score , reverse=True)
+    
+    return render_template('teamTwo.html',Leaders = ListOfLeadboardRow, usersLeauges = currentuser.usersCurrentLeauges )
+## will be the league scoreboard
+@app.route('/teamThree')
+@login_required
+def teamThree():
+    PickCheckerList = []
+    full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/picks"
+    with open(directory+'/%s.csv' % currentuser.usersCurrentLeauges[0], 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            ListOfWinners = []
+            if len(row) != 0:
+                name = row[0]
+                RedoRow = row
+                RedoRow.pop(0)
+                for item in RedoRow:
+                    if item != '':
+                        ListOfWinners.append(item)
+                Done = PickChecker(name,ListOfWinners)
+                PickCheckerList.append(Done)
+
+    games_today = Boxscores(9, 2019)
+    stef = games_today._boxscores
+    week = "9"
+    year = "2019"
+    numberOfGames = len(stef[week+'-'+year])
+    winners = []
+    ListOfLeadboardRow = []
+    for i in range(numberOfGames):
+        f = stef['9-2019'][i]['winning_name']
+        winners.append(f)
+
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[0], 'r') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            row = LeadboardRow(row[0],int(row[1]))
+            ListOfLeadboardRow.append(row)
+
+    for item in PickCheckerList:
+            count = 0
+            for WinnerPicked in item.picks:
+                if WinnerPicked in winners:
+                    count = count + 1
+            for LeadboardRowCheck in ListOfLeadboardRow:
+                if LeadboardRowCheck.username == item.username:
+                    LeadboardRowCheck.score = int(LeadboardRowCheck.score) + count
+    directory = os.path.dirname(full_path)+"/leagues"
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[2], 'w') as csv_file:
+        for item in ListOfLeadboardRow:
+            csv_file.write(str(item.username)+","+str(item.score)+"\n")
+    directory = os.path.dirname(full_path)+"/picks"
+    empty = False
+    with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[2], 'a+') as csv_file:
+        emptycheck = csv_file.read(1)
+        if not emptycheck:
+            empty = True
+    if empty == False:
+        with open(directory+'/%s.csv' %  currentuser.usersCurrentLeauges[2], 'w+') as csv_file:
+            NeedThisForIndent = 5
+
+    ListOfLeadboardRow.sort(key= lambda x: x.score , reverse=True)
+    
+    return render_template('teamThree.html',Leaders = ListOfLeadboardRow, usersLeauges = currentuser.usersCurrentLeauges )
+
+## shows who won the games last week.
+@app.route('/lastweek')
+@login_required
+def lastweek():
+    games_today = Boxscores(12, 2019)
+    stef = games_today._boxscores
+    week = "12"
+    year = "2019"
+    numberOfGames = len(stef[week+'-'+year])
+    winners = []
+    for i in range(numberOfGames):
+        f = stef['12-2019'][i]['winning_name']
         winners.append(f)
     lens = len(winners)
     return render_template('lastweek.html',lens = lens,winners = winners, usersLeauges = currentuser.usersCurrentLeauges )

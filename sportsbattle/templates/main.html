@@ -4,7 +4,7 @@
 <head>
     <title>Sports Battle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
         body {
             background-color: #388E3C;
@@ -86,9 +86,10 @@
     </div>
     <div id="centertext">
         {% if error %}
-        <p id="text" class="error"><strong>Error:</strong> {{ error }}
+        <p id="text" class="error"><strong>Error:</strong> {{ error }} </p>
         {% endif %}
     </div>
+
     <div class="container" style="text-align: center;">
         <br>
         <div class="boxed">
