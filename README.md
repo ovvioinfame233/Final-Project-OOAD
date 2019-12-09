@@ -8,6 +8,7 @@
 
 Object Oriented Analysis and Design Final Project. This project is called SportsBattle, where a user can place picks on teams playing.
 
+Our final report is in `FinalReport.pdf`
 
 To run our app simply navigate to the `sportsbattle` folder
 
