@@ -66,6 +66,7 @@ with open(directory+"/"+"test1"+".csv", 'r') as csv_file:
         info = row2.split(',')
         WhoPicked = info[0]
         alreadyPicked.append(WhoPicked)
+        
 
 
 

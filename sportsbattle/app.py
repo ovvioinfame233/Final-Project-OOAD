@@ -144,16 +144,17 @@ def makepicks(team):
         games.append(hmm)
     alreadyPicked = []
     full_path = os.path.realpath(__file__)
+    directory = os.path.dirname(full_path)+"/picks"
     if request.method == 'POST':
-        directory = os.path.dirname(full_path)+"/picks"
-        PicksFile = open(directory+"/"+team+".csv", 'a+')
-        for row2 in PicksFile:
-            info = row2.split(',')
-            WhoPicked = info[0]
-            alreadyPicked.append(WhoPicked)
+        
+        with open(directory+"/"+team+".csv", 'r') as csv_file:
+            for row2 in csv_file:
+                info = row2.split(',')
+                WhoPicked = info[0]
+                alreadyPicked.append(WhoPicked)
         if currentuser.username in alreadyPicked:
             error = "You have already made your picks this week"
-            return render_template('makepicks.html',error = error)
+            return render_template('main.html',usersLeauges = currentuser.usersCurrentLeauges,error = error)
         else:
             with open('picks/%s.csv' % team, 'a+') as picksOut:
                 picksOut.write(currentuser.username + ',')
