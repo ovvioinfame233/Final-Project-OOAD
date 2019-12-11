@@ -200,6 +200,8 @@ def createleague():
                     elif currentuser.usersCurrentLeauges[2] == "":
                         currentuser.usersCurrentLeauges[2]=(newLeg).name
                 Legs.append(newLeg)
+                with open('picks/%s.csv' %request.form['leagueName'],'w+' ):
+                    indentkeepr = 5
                 return redirect(url_for('home'))
 
     return render_template('createleague.html', error=error)
